@@ -7,9 +7,9 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import electronReload from 'electron-reload';
 import kill from 'tree-kill';
 
-import { START_SERVER, KILL_SERVER, SERVER_SDTOUT } from './ipcTypes';
+import { START_SERVER, KILL_SERVER, SERVER_SDTOUT } from './ipcEventTypes';
 
-electronReload(__dirname);
+if (process.env.NODE_ENV === 'development') electronReload(__dirname);
 
 let mainWindow: BrowserWindow | null;
 let serverProcess: ChildProcess;
