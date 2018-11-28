@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as url from 'url';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
@@ -7,7 +6,12 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import electronReload from 'electron-reload';
 import kill from 'tree-kill';
 
-import { START_SERVER, KILL_SERVER, SERVER_SDTOUT } from './ipcEventTypes';
+import {
+  START_SERVER,
+  KILL_SERVER,
+  SERVER_SDTOUT,
+  SERVER_STARTED
+} from './ipcEventTypes';
 
 if (process.env.NODE_ENV === 'development') electronReload(__dirname);
 
@@ -67,8 +71,15 @@ ipcMain.on(START_SERVER, () => {
   ]);
 
   serverProcess.stdout.on('data', (data) => {
-    console.log(data.toString());
-    mainWindow.webContents.send(SERVER_SDTOUT, data.toString());
+    const dataString: string = data.toString();
+
+    if (dataString === 'server_started') {
+      console.log('started!!!!!!!!!!!');
+      mainWindow.webContents.send(SERVER_STARTED);
+    }
+
+    console.log(dataString);
+    mainWindow.webContents.send(SERVER_SDTOUT, dataString);
   });
 
   serverProcess.stderr.on('data', (data) => {

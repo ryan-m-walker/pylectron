@@ -14,6 +14,12 @@ class App extends Component {
     serverIsRunning: false
   };
 
+  componentDidMount() {
+    ipcRenderer.on('server_started', () => {
+      console.log('heard: server started');
+    });
+  }
+
   startServer = () => {
     this.setState({ serverIsRunning: true });
     ipcRenderer.send(START_SERVER);
